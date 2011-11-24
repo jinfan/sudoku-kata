@@ -1,16 +1,20 @@
 package com.brodwall.kata.sudoku;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.InOrder;
+import static org.fest.assertions.Assertions.assertThat;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.fest.assertions.Assertions.assertThat;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.*;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.InOrder;
 
 public class SudokuSolverTest {
     private SudokuBoard board = mock(SudokuBoard.class);
@@ -18,6 +22,7 @@ public class SudokuSolverTest {
 
     @Before
     public void allCellsAreFilled() {
+        board.setBoxSize(3);
         when(board.isFilled(anyInt(), anyInt())).thenReturn(true);
     }
 
@@ -29,44 +34,45 @@ public class SudokuSolverTest {
     @Test
     public void shouldNotFindSolutionWhenCellHasNoOptions() throws Exception {
         when(board.isFilled(8, 8)).thenReturn(false);
-        when(board.getOptionsForCell(8,8)).thenReturn(noOptions());
+        when(board.getOptionsForCell(8, 8)).thenReturn(noOptions());
         assertThat(solver.solve()).isFalse();
     }
 
     @Test
     public void shouldFindSolutionWhenCellHasOneOption() throws Exception {
         when(board.isFilled(8, 8)).thenReturn(false);
-        when(board.getOptionsForCell(8,8)).thenReturn(oneOption(3));
+        when(board.getOptionsForCell(8, 8)).thenReturn(oneOption(3));
         assertThat(solver.solve()).isTrue();
-        verify(board).setCellValue(8,8, 3);
+        verify(board).setCellValue(8, 8, 3);
     }
 
     @Test
     public void shouldBacktrackWhenNoOptionsInFutureCell() throws Exception {
         when(board.isFilled(7, 8)).thenReturn(false);
-        when(board.getOptionsForCell(7,8)).thenReturn(options(1,2,3));
+        when(board.getOptionsForCell(7, 8)).thenReturn(options(1, 2, 3));
         when(board.isFilled(8, 8)).thenReturn(false);
-        when(board.getOptionsForCell(8,8)).thenReturn(noOptions()).thenReturn(oneOption(1));
+        when(board.getOptionsForCell(8, 8)).thenReturn(noOptions()).thenReturn(
+                oneOption(1));
 
         assertThat(solver.solve()).isTrue();
 
-        verify(board).setCellValue(7,8, 2);
-        verify(board).setCellValue(8,8, 1);
-        verify(board, never()).setCellValue(7,8, 3);
+        verify(board).setCellValue(7, 8, 2);
+        verify(board).setCellValue(8, 8, 1);
+        verify(board, never()).setCellValue(7, 8, 3);
     }
 
     @Test
     public void shouldClearCellWhenBacktracking() throws Exception {
         when(board.isFilled(7, 8)).thenReturn(false);
-        when(board.getOptionsForCell(7,8)).thenReturn(options(1));
+        when(board.getOptionsForCell(7, 8)).thenReturn(options(1));
         when(board.isFilled(8, 8)).thenReturn(false);
-        when(board.getOptionsForCell(8,8)).thenReturn(noOptions());
+        when(board.getOptionsForCell(8, 8)).thenReturn(noOptions());
 
         assertThat(solver.solve()).isFalse();
 
         InOrder order = inOrder(board);
-        order.verify(board).setCellValue(7,8, 1);
-        order.verify(board).clearCell(7,8);
+        order.verify(board).setCellValue(7, 8, 1);
+        order.verify(board).clearCell(7, 8);
     }
 
     @Test
