@@ -43,18 +43,26 @@ public class SudokuSolver {
     }
 
     public String dumpBoard() {
-        return board.dumpBoard();
+        return board.toString();
+    }
+
+    public String dumpBoard(String sep) {
+        return board.toString(sep);
     }
 
     public static void main(String[] args) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(args[0]));
+        String sep = "\n";
+        if (args.length > 1) {
+            sep = args[1];
+        }
         String line;
         while ((line = reader.readLine()) != null) {
             SudokuSolver solver = new SudokuSolver(line);
             System.out.println("Solving: ");
-            System.out.println(solver.dumpBoard());
+            System.out.println(solver.dumpBoard(sep));
             solver.solve();
-            System.out.println("Solved: \n" + solver.dumpBoard());
+            System.out.println("Solved: \n" + solver.dumpBoard(sep));
         }
     }
 }

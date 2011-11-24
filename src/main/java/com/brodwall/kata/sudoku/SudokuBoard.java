@@ -96,15 +96,24 @@ public class SudokuBoard {
         return board[row][column];
     }
 
-    public String dumpBoard() {
+    private String dumpBoard(String separator) {
         StringBuilder result = new StringBuilder();
         for (Integer[] row : board) {
             for (Integer values : row) {
                 result.append(values != null ? values.toString() : '.');
             }
-            result.append("\n");
+            result.append(separator);
         }
         return result.toString();
+    }
+
+    @Override
+    public String toString() {
+        return dumpBoard("\n");
+    }
+
+    public String toString(String sep) {
+        return dumpBoard(sep);
     }
 
     public void readBoard(String boardAsString) {
