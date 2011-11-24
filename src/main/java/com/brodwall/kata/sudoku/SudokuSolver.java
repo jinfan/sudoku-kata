@@ -5,11 +5,11 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class SudokuSolver {
-    private static final int SIZE = 9;
+    private static final int SIZE = SudokuBoard.SIZE;
     private SudokuBoard board = new SudokuBoard();
 
     public SudokuSolver(String puzzle) {
-        board.readBoard(puzzle);        
+        board.readBoard(puzzle);
     }
 
     public SudokuSolver(SudokuBoard board) {

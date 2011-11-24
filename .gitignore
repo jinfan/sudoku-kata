@@ -1,3 +1,11 @@
 .idea
 *.iml
-target
+target/
+#ignore everything under the 'bin' folder
+bin/
+#ignore everything under any CVS folders
+CVS/
+#ignore the eclipse configuration files
+.classpath
+.project
+.settings

@@ -5,15 +5,17 @@ import java.util.Arrays;
 import java.util.List;
 
 public class SudokuBoard {
-    private Integer[][] board = new Integer[SIZE][SIZE];
-    private static final int SIZE = 9;
+    public static final int BOXSIZE = 3;
+    public static final int SIZE = BOXSIZE * BOXSIZE;
+    private final Integer[][] board = new Integer[SIZE][SIZE];
 
     public boolean isFilled(int row, int column) {
         return board[row][column] != null;
     }
 
     public List<Integer> getOptionsForCell(int row, int column) {
-        List<Integer> options = new ArrayList<Integer>(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9));
+        List<Integer> options = new ArrayList<Integer>(Arrays.asList(1, 2, 3,
+                4, 5, 6, 7, 8, 9));
         removeOptionsInRow(options, row);
         removeOptionsInColumn(options, column);
         removeOptionsInBox(options, row, column);
@@ -21,21 +23,23 @@ public class SudokuBoard {
     }
 
     private void removeOptionsInBox(List<Integer> options, int row, int column) {
-        int boxRow = row - row%3, boxColumn = column - column%3;
-        for (int rowOffset=0; rowOffset<3; rowOffset++) {
-            for (int columnOffset=0; columnOffset<3; columnOffset++) {
-                options.remove(board[boxRow+rowOffset][boxColumn+columnOffset]);
+        int boxRow = row - row % BOXSIZE, boxColumn = column - column % BOXSIZE;
+        for (int rowOffset = 0; rowOffset < BOXSIZE; rowOffset++) {
+            for (int columnOffset = 0; columnOffset < BOXSIZE; columnOffset++) {
+                options.remove(board[boxRow + rowOffset][boxColumn
+                                                         + columnOffset]);
             }
         }
     }
 
     private void removeOptionsInColumn(List<Integer> options, int column) {
-        for (int row=0; row<SIZE; row++) options.remove(board[row][column]);
+        for (int row = 0; row < SIZE; row++)
+            options.remove(board[row][column]);
     }
 
-
     private void removeOptionsInRow(List<Integer> options, int row) {
-        for (int column=0; column<SIZE; column++) options.remove(board[row][column]);
+        for (int column = 0; column < SIZE; column++)
+            options.remove(board[row][column]);
     }
 
     public void setCellValue(int row, int column, int value) {
