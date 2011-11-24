@@ -1,4 +1,11 @@
-This is my 1st GIT project and was having fun forking some sudoku project and gneralized it. please see original project for details.
+This is my 1st GIT project and was having fun forking ihannes's sudoku project and generalized it ( the box size can be 4x4, 9x9 or 16x16). 
 
-at
-http://github.com/jhannes/sudoku-kata/commits/commit_per_test/
+You need maven and java to build this project.
+
+To run some of the test data in 9x9 format. please use the following:
+
+java -jar target/sudoku-kata-1.0.jar ./puzzles.txt 
+java -jar target/sudoku-kata-1.0.jar ./puzzles2.txt 
+java -jar target/sudoku-kata-1.0.jar ./puzzles3.txt 
+
+please see original project for details at http://github.com/jhannes/sudoku-kata/commits/commit_per_test/ or click on the fork project.
