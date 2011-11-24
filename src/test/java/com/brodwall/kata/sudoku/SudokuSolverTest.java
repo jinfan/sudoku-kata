@@ -18,12 +18,13 @@ import org.mockito.InOrder;
 
 public class SudokuSolverTest {
     private SudokuBoard board = mock(SudokuBoard.class);
-    private SudokuSolver solver = new SudokuSolver(board);
+    private SudokuSolver solver;
 
     @Before
     public void allCellsAreFilled() {
-        board.setBoxSize(3);
+        when(board.getSize()).thenReturn(9);
         when(board.isFilled(anyInt(), anyInt())).thenReturn(true);
+        solver = new SudokuSolver(board);
     }
 
     @Test
