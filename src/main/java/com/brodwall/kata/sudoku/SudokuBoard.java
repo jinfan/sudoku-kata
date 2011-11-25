@@ -107,24 +107,97 @@ public class SudokuBoard {
         return result.toString();
     }
 
+    public static String padLeft(String in, int size, char padChar) {
+        if (in.length() <= size) {
+            char[] temp = new char[size];
+            /* Llenado Array con el padChar */
+            for (int i = 0; i < size; i++) {
+                temp[i] = padChar;
+            }
+            int posIniTemp = size - in.length();
+            for (int i = 0; i < in.length(); i++) {
+                temp[posIniTemp] = in.charAt(i);
+                posIniTemp++;
+            }
+            return new String(temp);
+        }
+        return "";
+    }
+
+    public String prettyPrintBoard(String cellSep, String lineSeparator) {
+        StringBuilder result = new StringBuilder();
+        int rowCount = 0;
+        for (Integer[] row : board) {
+            if (cellSep != null && !cellSep.isEmpty()) {
+                if (rowCount % boxSize == 0) {
+                    dumpSeparator(result, "=");
+                } else {
+                    dumpSeparator(result, "-");
+                }
+                result.append(lineSeparator);
+            }
+
+            for (Integer values : row) {
+                result.append(cellSep);
+                result.append(padLeft(values != null ? values.toString() : " ",
+                        3, ' '));
+            }
+            result.append(cellSep);
+            result.append(lineSeparator);
+            rowCount++;
+        }
+        if (cellSep != null && !cellSep.isEmpty()) {
+            dumpSeparator(result, "=");
+        }
+        return result.toString();
+    }
+
+    private StringBuilder dumpSeparator(StringBuilder result, String s) {
+        for (int i = 0; i < size; i++) {
+            result.append(s);
+            result.append(s);
+            result.append(s);
+            result.append(s);
+        }
+        result.append(s);
+        return result;
+    }
+
     @Override
     public String toString() {
-        return dumpBoard("\n");
+        return toString("\n");
     }
 
     public String toString(String sep) {
+        if (size > 10) {
+            return prettyPrintBoard("|", sep);
+        }
+
         return dumpBoard(sep);
     }
 
     public void readBoard(String boardAsString) {
         int length = boardAsString.length();
-        int mysize = (int) Math.sqrt(Math.sqrt(length));
-        this.setBoxSize(mysize);
 
-        int index = 0;
-        for (Integer[] row : board) {
-            for (int column = 0; column < row.length; column++) {
-                row[column] = readValue(boardAsString.charAt(index++));
+        if (length < 100) { // max 9x9
+            int mysize = (int) Math.sqrt(Math.sqrt(length));
+            this.setBoxSize(mysize);
+            int index = 0;
+            for (Integer[] row : board) {
+                for (int column = 0; column < row.length; column++) {
+                    row[column] = readValue(boardAsString.charAt(index++));
+                }
+            }
+        } else {
+            // split string 1st
+            String[] ss = boardAsString.split(",");
+            int mysize = (int) Math.sqrt(Math.sqrt(ss.length));
+            this.setBoxSize(mysize);
+            int index = 0;
+            for (Integer[] row : board) {
+                for (int column = 0; column < row.length; column++) {
+                    row[column] = Integer.valueOf(ss[index++]);
+                }
             }
         }
     }
