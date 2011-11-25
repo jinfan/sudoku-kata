@@ -3,25 +3,28 @@ package com.brodwall.kata.sudoku;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 public class SudokuSolver {
     private SudokuBoard board = new SudokuBoard();
-    int size;
+
+    public SudokuSolver() {
+    }
 
     public SudokuSolver(String puzzle) {
         board.readBoard(puzzle);
-        size = board.getSize();
     }
 
     public SudokuSolver(SudokuBoard board) {
         this.board = board;
-        size = board.getSize();
     }
 
     private boolean findSolution(SudokuBoard board, int index) {
-        int row = index / size, column = index % size;
+        int row = index / board.getSize(), column = index % board.getSize();
 
-        if (index == size * size) {
+        if (index == board.getSize() * board.getSize()) {
             return true;
         }
         if (board.isFilled(row, column)) {
@@ -36,6 +39,59 @@ public class SudokuSolver {
         }
         board.clearCell(row, column);
         return false;
+    }
+
+    private boolean generate(SudokuBoard board, int index) {
+        int row = index / board.getSize(), column = index % board.getSize();
+
+        if (index == board.getSize() * board.getSize()) {
+            return true;
+        }
+        if (board.isFilled(row, column)) {
+            return generate(board, index + 1);
+        }
+
+        List<Integer> list = board.getOptionsForCell(row, column);
+        Collections.shuffle(list);
+        for (Integer value : list) {
+            board.setCellValue(row, column, value);
+            if (generate(board, index + 1)) {
+                return true;
+            }
+        }
+        board.clearCell(row, column);
+        return false;
+    }
+
+    public SudokuBoard generate(int n) {
+        SudokuBoard gboard = new SudokuBoard(n);
+        SudokuBoard retboard = null;
+        Random rand = new Random();
+        int totalNeed = n * n * 2 - 1;
+        int k, j;
+        if (generate(gboard, 0)) {
+            retboard = new SudokuBoard(n);
+            SudokuBoard tstboard = new SudokuBoard(n);
+            for (int i = 0; i < totalNeed; i++) {
+                do {
+                    k = rand.nextInt(gboard.getSize());
+                    j = rand.nextInt(gboard.getSize());
+                } while (retboard.isFilled(k, j));
+                retboard.setCellValue(k, j, gboard.getCellValue(k, j));
+                tstboard.setCellValue(k, j, gboard.getCellValue(k, j));
+            }
+
+            // see if we can solve it
+            while (!findSolution(tstboard, 0)) {
+                do {
+                    k = rand.nextInt(gboard.getSize());
+                    j = rand.nextInt(gboard.getSize());
+                } while (retboard.isFilled(k, j));
+                retboard.setCellValue(k, j, gboard.getCellValue(k, j));
+                tstboard.setCellValue(k, j, gboard.getCellValue(k, j));
+            }
+        }
+        return retboard;
     }
 
     public boolean solve() {

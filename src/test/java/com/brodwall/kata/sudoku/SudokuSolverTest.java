@@ -17,7 +17,7 @@ import org.junit.Test;
 import org.mockito.InOrder;
 
 public class SudokuSolverTest {
-    private SudokuBoard board = mock(SudokuBoard.class);
+    private final SudokuBoard board = mock(SudokuBoard.class);
     private SudokuSolver solver;
 
     @Before
@@ -89,6 +89,13 @@ public class SudokuSolverTest {
         }
     }
 
+    @Test
+    public void generatePuzzle() {
+        SudokuSolver solver = new SudokuSolver();
+        SudokuBoard b1 = solver.generate(3);
+        assertThat(b1 != null);
+        System.out.println(b1.toString(""));
+    }
     private List<Integer> options(Integer... options) {
         return Arrays.asList(options);
     }

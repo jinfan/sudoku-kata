@@ -67,7 +67,7 @@ public class SudokuBoard {
         for (int rowOffset = 0; rowOffset < boxSize; rowOffset++) {
             for (int columnOffset = 0; columnOffset < boxSize; columnOffset++) {
                 options.remove(board[boxRow + rowOffset][boxColumn
-                        + columnOffset]);
+                                                         + columnOffset]);
             }
         }
     }
@@ -98,9 +98,15 @@ public class SudokuBoard {
 
     private String dumpBoard(String separator) {
         StringBuilder result = new StringBuilder();
+        boolean isBig = size > 10;
+        int i = 0;
         for (Integer[] row : board) {
             for (Integer values : row) {
+                if (isBig && i > 0) {
+                    result.append(',');
+                }
                 result.append(values != null ? values.toString() : '.');
+                i++;
             }
             result.append(separator);
         }
@@ -169,10 +175,6 @@ public class SudokuBoard {
     }
 
     public String toString(String sep) {
-        if (size > 10) {
-            return prettyPrintBoard("|", sep);
-        }
-
         return dumpBoard(sep);
     }
 
@@ -196,7 +198,7 @@ public class SudokuBoard {
             int index = 0;
             for (Integer[] row : board) {
                 for (int column = 0; column < row.length; column++) {
-                    row[column] = Integer.valueOf(ss[index++]);
+                    row[column] = readValue(ss[index++]);
                 }
             }
         }
@@ -206,4 +208,7 @@ public class SudokuBoard {
         return c != '.' && c != '0' ? Integer.valueOf(c + "") : null;
     }
 
+    private Integer readValue(String c) {
+        return c != "." && c != "0" ? Integer.valueOf(c) : null;
+    }
 }
